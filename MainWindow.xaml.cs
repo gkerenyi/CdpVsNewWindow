@@ -110,13 +110,6 @@ namespace CdpVsNewWindow
 
         private void CoreWebView2_NewWindowRequested(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs e)
         {
-            if (e.Uri == "https://random.test.url/")
-            {
-                e.Handled = true;
-                _ = Task.Factory.StartNew(() => StartPostNavigationTest(), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
-                return;
-            }
-
             var _deferral = e.GetDeferral();
 
             _ = Dispatcher.InvokeAsync(() => OpenNewWindowAsync(e, _deferral));
@@ -217,26 +210,6 @@ namespace CdpVsNewWindow
             catch (JsonException)
             {
                 return false;
-            }
-        }
-
-        private void StartPostNavigationTest()
-        {
-            this.WebView.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
-            this.WebView.CoreWebView2.Navigate("https://lite.duckduckgo.com/lite");
-
-            void CoreWebView2_DOMContentLoaded(object? sender, CoreWebView2DOMContentLoadedEventArgs e)
-            {
-                this.WebView.CoreWebView2.DOMContentLoaded -= CoreWebView2_DOMContentLoaded;
-
-                this.WebView.CoreWebView2.ExecuteScriptAsync("""
-                    if (window.location.href === 'https://lite.duckduckgo.com/lite') {
-                        const form = document.getElementsByTagName('form')[0]
-                        form.setAttribute('target', '_blank')
-                        document.querySelectorAll('input[class="query"]')[0].value = 'test'
-                        form.submit()
-                    }
-                """);
             }
         }
 

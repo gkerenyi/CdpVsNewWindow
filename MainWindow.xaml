@@ -35,7 +35,7 @@
                           VerticalAlignment="Center"
                           SelectedIndex="0">
                     <ComboBoxItem>None</ComboBoxItem>
-                    <ComboBoxItem>25</ComboBoxItem>
+                    <ComboBoxItem IsSelected="True">25</ComboBoxItem>
                     <ComboBoxItem>50</ComboBoxItem>
                     <ComboBoxItem>75</ComboBoxItem>
                 </ComboBox>
