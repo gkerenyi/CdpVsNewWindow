@@ -19,8 +19,18 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="4" VerticalAlignment="Center" Text="Call CDP methods:" />
-                <ComboBox x:Name="CdpTiming"
+                <TextBlock Margin="4" VerticalAlignment="Center" Text="Handler type:" />
+                <ComboBox x:Name="HandlerType"
+                          Margin="0,4,4,4"
+                          VerticalAlignment="Center"
+                          SelectedIndex="0">
+                    <ComboBoxItem IsSelected="True">WebResourceRequested</ComboBoxItem>
+                    <ComboBoxItem>CDP Fetch</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="4" VerticalAlignment="Center" Text="Add event handlers:" />
+                <ComboBox x:Name="Timing"
                           Margin="0,4,4,4"
                           VerticalAlignment="Center"
                           SelectedIndex="0">

@@ -1,10 +1,13 @@
 # ScriptVsNewWindow
 
-Test cases for calling Chrome DevTools Protocol methods `Fetch.enable` and `Target.SetAutoAttach` when opening a new window and navigating to a URL.
+Test cases for adding web resource request handlers by the following methods when opening a new window and navigating to a URL.
+- Assigning a handler to `WebResourceRequested`.
+- Assigning a handler to Chrome DevTools Protocol events `Fetch.requestPaused` and `Target.autoAttached`, then calling Chrome DevTools Protocol methods `Fetch.enable` and `Target.setAutoAttach` to enable event hanling.
 
 ## Settings
-- Call CDP methods: sets whether the Chrome DevTools Protocol methods to enable request processing is called before or after calling `CoreWebView2NewWindowRequestedEventArgs.NewWindow`
-- Delay (ms): parameter of an `await Task.Delay()` call before calling the CDP methods, which is used to simulate calling other async methods before calling CDP methods
+- Handler type: Use either `WebResourceRequested` or Chrome DevTools Protocol `Fetch` event handlers.
+- Add event handlers: sets whether request handlers are assigned before or after calling `CoreWebView2NewWindowRequestedEventArgs.NewWindow`
+- Delay (ms): parameter of an `await Task.Delay()` call before assigning the handler, which is used to simulate calling other methods between assigning `NewWindow` and setting up the handler.
 
 # Expected Behavior
 The project loads an embedded web page with a link. When the link is clicked a new window should appear containing a WebView2 instance that has:
@@ -12,10 +15,10 @@ The project loads an embedded web page with a link. When the link is clicked a n
   - 18 images at the bottom of the page. The first and last image is displayed and contains the text "Must not be blocked", the other images are not loaded (blocked).
 
 # Actual Behavior
-- If "Call CDP methods" is set to Before:
-   + All images are shown, including the ones that should have been blocked. It seems that calling the CDP methods has no effect before setting `CoreWebView2NewWindowRequestedEventArgs.NewWindow`
-- If "Call CDP methods" is set to After:
-   + Depending on the Delay setting, some or all of the images that should have been blocked are shown instead. There seems to be a race condition, because navigation is started after `CoreWebView2NewWindowRequestedEventArgs.NewWindow` is set, possibly when the thread is relinquished to WebView2 during the subsequent async call. As a result of navigation starting before `Fetch` is enabled, some web requests do not reach `CoreWebView2_DevToolsRequestPaused`, because `Fetch` does not have a chance to get enabled before that.
+- If `Add event handlers` is set to Before:
+   + All images are shown, including the ones that should have been blocked. It seems that setting up the event handlers has no effect before setting `CoreWebView2NewWindowRequestedEventArgs.NewWindow`
+- If `Add event handlers` is set to After:
+   + Depending on the Delay setting, some or all of the images that should have been blocked are shown instead. There seems to be a race condition, because navigation is started right after `CoreWebView2NewWindowRequestedEventArgs.NewWindow` is set. As a result of navigation starting before assigning the event handlers, some requests do not have a chance to reach the event handlers and survive without blocking.
 
 # Requirements
 This project requires:

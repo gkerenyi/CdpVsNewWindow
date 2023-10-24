@@ -108,6 +108,17 @@ namespace CdpVsNewWindow
             }
         }
 
+        private void CoreWebView2_WebResourceRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
+        {
+            if (sender is CoreWebView2 webView)
+            {
+                if (e.Request.Uri.ToString().Contains(".png") && !e.Request.Uri.ToString().Contains("show"))
+                {
+                    e.Response = webView.Environment.CreateWebResourceResponse(null, 404, "not found", string.Empty);
+                }
+            }
+        }
+
         private void CoreWebView2_NewWindowRequested(object? sender, Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs e)
         {
             var _deferral = e.GetDeferral();
@@ -235,6 +246,7 @@ namespace CdpVsNewWindow
 
             await newWebView.EnsureCoreWebView2Async();
             LogEvent($"Creating new WebView2 version {newWebView.CoreWebView2.Environment.BrowserVersionString}");
+            newWebView.CoreWebView2.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
 
             newWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
             newWebView.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
@@ -249,32 +261,50 @@ namespace CdpVsNewWindow
             cdpEventReceiverToWebView[attachedToTargetReceiver] = newWebView;
             attachedToTargetReceiver.DevToolsProtocolEventReceived += CoreWebView2_DevToolsAttachedToTarget;
 
-            if (this.CdpTiming.SelectedIndex == 0)
+            if (this.Timing.SelectedIndex == 0)
             {
-                LogEvent($"Calling Fetch.enable");
-                await newWebView.CoreWebView2.CallDevToolsProtocolMethodAsync("Fetch.enable", "{\"patterns\":[{\"requestStage\":\"Request\"}]}");
-                LogEvent($"Called Fetch.enable");
-                LogEvent($"Calling Target.setAutoAttach");
-                await newWebView.CoreWebView2.CallDevToolsProtocolMethodAsync("Target.setAutoAttach", "{\"autoAttach\":true,\"waitForDebuggerOnStart\":true,\"flatten\":true}");
-                LogEvent($"Called Target.setAutoAttach");
+                if (this.HandlerType.SelectedIndex == 0)
+                {
+                    LogEvent($"Assigning WebResourceRequested");
+                    newWebView.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
+                    LogEvent($"Assigned WebResourceRequested");
+                }
+                else
+                {
+                    LogEvent($"Calling Fetch.enable");
+                    await newWebView.CoreWebView2.CallDevToolsProtocolMethodAsync("Fetch.enable", "{\"patterns\":[{\"requestStage\":\"Request\"}]}");
+                    LogEvent($"Called Fetch.enable");
+                    LogEvent($"Calling Target.setAutoAttach");
+                    await newWebView.CoreWebView2.CallDevToolsProtocolMethodAsync("Target.setAutoAttach", "{\"autoAttach\":true,\"waitForDebuggerOnStart\":true,\"flatten\":true}");
+                    LogEvent($"Called Target.setAutoAttach");
+                }
             }
 
             LogEvent($"Assigning NewWindow");
             e.NewWindow = newWebView.CoreWebView2;
             LogEvent($"Assigned NewWindow");
 
-            if (this.CdpTiming.SelectedIndex == 1)
+            if (this.Timing.SelectedIndex == 1)
             {
                 if (this.Delay.SelectedIndex > 0)
                 {
                     await Task.Delay(TimeSpan.FromMilliseconds(25 * this.Delay.SelectedIndex));
                 }
-                LogEvent($"Calling Fetch.enable");
-                await newWebView.CoreWebView2.CallDevToolsProtocolMethodAsync("Fetch.enable", "{\"patterns\":[{\"requestStage\":\"Request\"}]}");
-                LogEvent($"Called Fetch.enable");
-                LogEvent($"Calling Target.setAutoAttach");
-                await newWebView.CoreWebView2.CallDevToolsProtocolMethodAsync("Target.setAutoAttach", "{\"autoAttach\":true,\"waitForDebuggerOnStart\":true,\"flatten\":true}");
-                LogEvent($"Called Target.setAutoAttach");
+                if (this.HandlerType.SelectedIndex == 0)
+                {
+                    LogEvent($"Assigning WebResourceRequested");
+                    newWebView.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
+                    LogEvent($"Assigned WebResourceRequested");
+                }
+                else
+                {
+                    LogEvent($"Calling Fetch.enable");
+                    await newWebView.CoreWebView2.CallDevToolsProtocolMethodAsync("Fetch.enable", "{\"patterns\":[{\"requestStage\":\"Request\"}]}");
+                    LogEvent($"Called Fetch.enable");
+                    LogEvent($"Calling Target.setAutoAttach");
+                    await newWebView.CoreWebView2.CallDevToolsProtocolMethodAsync("Target.setAutoAttach", "{\"autoAttach\":true,\"waitForDebuggerOnStart\":true,\"flatten\":true}");
+                    LogEvent($"Called Target.setAutoAttach");
+                }
             }
 
             e.Handled = true;
