@@ -48,6 +48,10 @@
                     <ComboBoxItem IsSelected="True">25</ComboBoxItem>
                     <ComboBoxItem>50</ComboBoxItem>
                     <ComboBoxItem>75</ComboBoxItem>
+                    <ComboBoxItem>100</ComboBoxItem>
+                    <ComboBoxItem>125</ComboBoxItem>
+                    <ComboBoxItem>200</ComboBoxItem>
+                    <ComboBoxItem>500</ComboBoxItem>
                 </ComboBox>
             </StackPanel>
             <Button x:Name="CopyLog"

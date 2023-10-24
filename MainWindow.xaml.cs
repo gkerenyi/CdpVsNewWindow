@@ -288,7 +288,8 @@ namespace CdpVsNewWindow
             {
                 if (this.Delay.SelectedIndex > 0)
                 {
-                    await Task.Delay(TimeSpan.FromMilliseconds(25 * this.Delay.SelectedIndex));
+                    string value = ((ComboBoxItem)this.Delay.SelectedItem).Content.ToString();
+                    await Task.Delay(TimeSpan.FromMilliseconds(int.Parse(value)));
                 }
                 if (this.HandlerType.SelectedIndex == 0)
                 {
