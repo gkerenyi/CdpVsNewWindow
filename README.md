@@ -1,4 +1,4 @@
-# ScriptVsNewWindow
+# CdpVsNewWindow
 
 Test cases for adding web resource request handlers by the following methods when opening a new window and navigating to a URL.
 - Assigning a handler to `WebResourceRequested`.
