@@ -11,7 +11,7 @@ Test cases for adding web resource request handlers by the following methods whe
 
 # Expected Behavior
 The project loads an embedded web page with a link. When the link is clicked a new window should appear containing a WebView2 instance that has:
-  - 10 images in an iframe. The 5th and 10th image is displayed and contains the text "Must not be blocked", the other images are not loaded (blocked).
+  - *[Ignore when using `WebResourceRequested]* 10 images in an iframe. The 5th and 10th image is displayed and contains the text "Must not be blocked", the other images are not loaded (blocked).
   - 18 images at the bottom of the page. The first and last image is displayed and contains the text "Must not be blocked", the other images are not loaded (blocked).
 
 # Actual Behavior
