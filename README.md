@@ -1,6 +1,6 @@
 # ScriptVsNewWindow
 
-Test cases for calling Chrome DevTools Protocol methods `Fetch.enable` and `Target.SetAutoAttach` when opening a new window and navigating to a URL.
+Test cases for calling Chrome DevTools Protocol methods `Fetch.enable` and `Target.setAutoAttach` when opening a new window and navigating to a URL.
 
 ## Settings
 - Call CDP methods: sets whether the Chrome DevTools Protocol methods to enable request processing is called before or after calling `CoreWebView2NewWindowRequestedEventArgs.NewWindow`
